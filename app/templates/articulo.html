@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block og_articulo %}
+  <meta property="article:published_time" content="{{ art.fecha_iso }}">
+  {% if art.actualizado %}<meta property="article:modified_time" content="{{ art.actualizado.isoformat() }}">{% endif %}
+  <meta property="article:author" content="{{ art.autor }}">
+  {% if art.categoria %}<meta property="article:section" content="{{ art.categoria }}">{% endif %}
+  {% for t in art.tags %}<meta property="article:tag" content="{{ t }}">
+  {% endfor %}
+{% endblock %}
+
+{% block contenido %}
+<div class="wrap-articulo">
+
+  <article class="articulo"
+           data-url="{{ canonica }}"
+           data-titulo="{{ art.titulo }}"
+           data-resumen="{{ art.resumen }}"
+           data-cita="{{ art.autor_cita }} ({{ art.fecha.year }}). {{ art.titulo }}. {{ SITIO_NOMBRE }}. {{ canonica }}">
+
+    <header class="art-cabecera">
+      <p class="mono migas">
+        <a href="{{ url('/') }}">Inicio</a>
+        {% if art.categoria %} / <a href="{{ url('/categoria/' ~ art.categoria_slug) }}">{{ art.categoria }}</a>{% endif %}
+      </p>
+      <h1 class="display">{{ art.titulo }}</h1>
+      {% if art.resumen %}<p class="art-resumen">{{ art.resumen }}</p>{% endif %}
+      <p class="meta mono art-meta">
+        <span>{{ art.autor }}</span>
+        <time datetime="{{ art.fecha_iso }}">{{ art.fecha_texto }}</time>
+        <span class="lectura">{{ art.tiempo_lectura }} min de lectura</span>
+      </p>
+      {% if art.actualizado and art.actualizado != art.fecha %}
+      <p class="mono actualizado">Actualizado el {{ art.actualizado_texto }}</p>
+      {% endif %}
+    </header>
+
+    <div class="cuerpo" id="cuerpo">
+      {{ art.cuerpo_html|safe }}
+    </div>
+
+    {% if art.tags %}
+    <p class="tags mono">{% for t in art.tags %}<span class="tag">{{ t }}</span>{% endfor %}</p>
+    {% endif %}
+  </article>
+
+  {# Barra de acciones: lateral en escritorio, fija al pie en móvil. #}
+  <aside class="acciones" id="acciones" aria-label="Compartir y citar">
+    <p class="acciones-titulo mono">Compartir</p>
+    <a class="accion" id="a-linkedin" href="#" target="_blank" rel="noopener">
+      <span class="ico">in</span><span class="et">LinkedIn</span></a>
+    <a class="accion" id="a-whatsapp" href="#" target="_blank" rel="noopener">
+      <span class="ico">wa</span><span class="et">WhatsApp</span></a>
+    <a class="accion" id="a-facebook" href="#" target="_blank" rel="noopener">
+      <span class="ico">f</span><span class="et">Facebook</span></a>
+    <button class="accion" type="button" data-copiar="url">
+      <span class="ico">↗</span><span class="et">Copiar enlace</span></button>
+    <button class="accion" type="button" data-copiar="resumen">
+      <span class="ico">¶</span><span class="et">Copiar resumen</span></button>
+    <button class="accion" type="button" data-copiar="cita">
+      <span class="ico">“</span><span class="et">Citar</span></button>
+  </aside>
+
+</div>
+
+<p class="volver"><a href="{{ url('/') }}" class="mono">← Todos los artículos</a></p>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/tablas.js" defer></script>
+<script src="/static/compartir.js" defer></script>
+{% endblock %}

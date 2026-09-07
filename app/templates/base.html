@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08110e">
+  <title>{{ titulo_pagina }}</title>
+  <meta name="description" content="{{ og_descripcion }}">
+  <link rel="canonical" href="{{ canonica }}">
+  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <link rel="alternate" type="application/rss+xml" title="{{ SITIO_NOMBRE }}" href="{{ url('/rss.xml') }}">
+
+  {# Open Graph. TODAS las URLs absolutas: LinkedIn cachea la primera lectura
+     y una vista previa mal generada se queda pegada. #}
+  <meta property="og:site_name" content="{{ SITIO_NOMBRE }}">
+  <meta property="og:locale" content="es_PE">
+  <meta property="og:type" content="{{ og_tipo }}">
+  <meta property="og:title" content="{{ og_titulo }}">
+  <meta property="og:description" content="{{ og_descripcion }}">
+  <meta property="og:image" content="{{ og_imagen }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="{{ canonica }}">
+  {% block og_articulo %}{% endblock %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ og_titulo }}">
+  <meta name="twitter:description" content="{{ og_descripcion }}">
+  <meta name="twitter:image" content="{{ og_imagen }}">
+
+  {# El CUERPO (IBM Plex Sans) en la ruta crítica; display y mono diferidos. #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+  <noscript><link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Mono:wght@500&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/static/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="cabecera">
+    <div class="cabecera-in">
+      <a class="marca" href="{{ url('/') }}">
+        <span class="marca-nombre display">Perú Sistemas</span><span class="marca-pro mono">PRO</span>
+      </a>
+      {% if categorias %}
+      <nav class="nav-cat mono" aria-label="Categorías">
+        {% for nombre, slug, n in categorias %}
+        <a href="{{ url('/categoria/' ~ slug) }}"
+           class="{% if categoria_actual_slug is defined and categoria_actual_slug == slug %}activa{% endif %}">{{ nombre }}</a>
+        {% endfor %}
+      </nav>
+      {% endif %}
+    </div>
+  </header>
+
+  <main id="contenido">
+    {% if aviso %}<p class="aviso">{{ aviso }}</p>{% endif %}
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="pie">
+    <div class="pie-in">
+      <p class="mono">Perú Sistemas PRO · {{ anio }}</p>
+      <p class="pie-links">
+        <a href="{{ url('/') }}">Inicio</a>
+        <a href="{{ url('/rss.xml') }}">RSS</a>
+        <a href="https://perusistemas.pro">perusistemas.pro</a>
+      </p>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

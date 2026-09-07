@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% macro tarjeta(a, grande=false) %}
+<article class="tarjeta {% if grande %}tarjeta-grande{% endif %}">
+  <p class="meta mono">
+    {% if a.categoria %}<a class="cat" href="{{ url('/categoria/' ~ a.categoria_slug) }}">{{ a.categoria }}</a>{% endif %}
+    <time datetime="{{ a.fecha_iso }}">{{ a.fecha_texto }}</time>
+    <span class="lectura">{{ a.tiempo_lectura }} min</span>
+  </p>
+  <h2 class="display"><a href="{{ url('/' ~ a.slug) }}">{{ a.titulo }}</a></h2>
+  {% if a.resumen %}<p class="resumen-tarjeta">{{ a.resumen }}</p>{% endif %}
+  <a class="leer mono" href="{{ url('/' ~ a.slug) }}">Leer el análisis →</a>
+</article>
+{% endmacro %}
+
+{% block contenido %}
+<div class="wrap">
+
+  <section class="portada">
+    <h1 class="display">Análisis para quien decide</h1>
+    <p class="sub">
+      Contabilidad, tributación, gestión empresarial, tecnología, inteligencia
+      artificial y sector público. Sin relleno.
+    </p>
+  </section>
+
+  {% if not destacados and not resto %}
+    <p class="vacio">Todavía no hay artículos publicados.</p>
+  {% endif %}
+
+  {% if destacados %}
+  <section class="bloque">
+    <h2 class="titulo-bloque mono">Destacados</h2>
+    <div class="rejilla rejilla-destacados">
+      {% for a in destacados %}{{ tarjeta(a, true) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if resto %}
+  <section class="bloque">
+    <h2 class="titulo-bloque mono">{% if destacados %}Más artículos{% else %}Artículos{% endif %}</h2>
+    <div class="rejilla">
+      {% for a in resto %}{{ tarjeta(a) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}
